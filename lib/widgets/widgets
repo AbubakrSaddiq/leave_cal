@@ -1,0 +1,185 @@
+import 'package:flutter/material.dart';
+
+class SummaryCard extends StatelessWidget {
+  final int remaining;
+  final int entitlement;
+  final int used;
+  final double progress;
+
+  const SummaryCard({
+    super.key,
+    required this.remaining,
+    required this.entitlement,
+    required this.used,
+    required this.progress,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                width: 150,
+                height: 150,
+                child: CircularProgressIndicator(
+                  value: 1.0, // Background ring
+                  strokeWidth: 12,
+                  color: Colors.grey.shade200,
+                ),
+              ),
+              SizedBox(
+                width: 150,
+                height: 150,
+                child: CircularProgressIndicator(
+                  value: progress, // Actual progress
+                  strokeWidth: 12,
+                  color: const Color(0xFF2E7D52), // Brand Green
+                  strokeCap: StrokeCap.round,
+                ),
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "$remaining",
+                    style: const TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1F2937),
+                    ),
+                  ),
+                  Text(
+                    "Days Left",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+          const SizedBox(height: 30),
+          Row(
+            children: [
+              _buildStatBox("Entitlement", entitlement),
+              const SizedBox(width: 16),
+              _buildStatBox("Used", used),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatBox(String label, int value) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFEAF4FA),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            Text(
+              "$value",
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2E7D52),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HistoryList extends StatelessWidget {
+  final List history;
+  final VoidCallback onAddTap;
+
+  const HistoryList({super.key, required this.history, required this.onAddTap});
+
+  @override
+  Widget build(BuildContext context) {
+    if (history.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(40),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300, style: BorderStyle.none),
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white.withOpacity(0.5),
+        ),
+        // Dashed border effect using a custom painter is complex, 
+        // sticking to simple clean UI for brevity
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "No leave history yet.\nTap + to start.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(), // Let parent scroll
+      shrinkWrap: true,
+      itemCount: history.length,
+      itemBuilder: (context, index) {
+        final item = history[index];
+        // Using intl is recommended, but for raw string logic:
+        return Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          elevation: 0,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+      
+             borderRadius: BorderRadius.circular(12),
+             side: BorderSide(color: Colors.grey.shade100)
+          ),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: const Color(0xFFEAF4FA),
+              child: const Icon(Icons.calendar_today, color: Color(0xFF2E7D52), size: 18),
+            ),
+            title: Text("${item.days} Working Days"),
+            subtitle: Text("Starts: ${item.startDate.toString().split(' ')[0]}"),
+            trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+          ),
+        );
+      },
+    );
+  }
+}

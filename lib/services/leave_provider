@@ -1,0 +1,159 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http; // Import for API calls
+
+class LeaveRecord {
+  final DateTime startDate;
+  final DateTime endDate;
+  final int days;
+  final DateTime requestedOn;
+
+  LeaveRecord({
+    required this.startDate,
+    required this.endDate,
+    required this.days,
+    required this.requestedOn,
+  });
+}
+
+class LeaveProvider extends ChangeNotifier {
+  final int totalEntitlement = 30;
+  List<LeaveRecord> _history = [];
+  
+  // List to hold fetched holidays (movable + fixed)
+  final List<DateTime> _loadedHolidays = [];
+  bool _isLoadingHolidays = false; // To prevent multiple simultaneous fetches
+
+  List<LeaveRecord> get history => _history;
+  int get usedDays => _history.fold(0, (sum, item) => sum + item.days);
+  int get remainingDays => totalEntitlement - usedDays;
+  double get progressPercentage => remainingDays / totalEntitlement;
+  bool get isLoadingHolidays => _isLoadingHolidays;
+
+  // --- API Configuration ---
+  // Using Nager.Date API for Nigeria (NG)
+  static const String _holidayApiUrl = 'https://date.nager.at/api/v3/PublicHolidays/';
+  
+  LeaveProvider() {
+    // Load holidays for the current year when the provider is created
+    loadInitialData();
+  }
+
+  // --- 1. ASYNC HOLIDAY FETCHING ---
+  Future<void> fetchHolidaysForYear(int year) async {
+    if (_isLoadingHolidays) return;
+    _isLoadingHolidays = true;
+    // We clear existing holidays to ensure we only have data for the requested year(s)
+    _loadedHolidays.clear(); 
+
+    try {
+      final response = await http.get(Uri.parse('$_holidayApiUrl$year/NG'));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> holidaysJson = json.decode(response.body);
+        
+        for (var holiday in holidaysJson) {
+          try {
+            // The date string is typically 'YYYY-MM-DD'
+            final date = DateTime.parse(holiday['date']);
+            _loadedHolidays.add(date);
+          } catch (e) {
+            // Handle parsing error for bad date format
+            debugPrint('Error parsing holiday date: $e');
+          }
+        }
+        debugPrint('Successfully fetched ${_loadedHolidays.length} holidays for $year.');
+      } else {
+        debugPrint('Failed to load holidays: Status Code ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('Error fetching holidays: $e');
+    } finally {
+      _isLoadingHolidays = false;
+      notifyListeners(); // Notify listeners once data is loaded/failed
+    }
+  }
+
+  void loadInitialData() {
+    final currentYear = DateTime.now().year;
+    // Fetch holidays for the current year and the next year for planning
+    fetchHolidaysForYear(currentYear);
+    // You might also want to fetch for (currentYear + 1)
+    // fetchHolidaysForYear(currentYear + 1); 
+  }
+
+
+  // --- 2. UPDATED IS HOLIDAY CHECK ---
+  bool _isHoliday(DateTime date) {
+    // Check if the date matches any of the loaded holidays
+    for (var holiday in _loadedHolidays) {
+      if (holiday.year == date.year && 
+          holiday.month == date.month && 
+          holiday.day == date.day) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // ... (addLeaveRequest method remains the same)
+  bool addLeaveRequest(DateTime startDate, int workingDays) {
+    if (_isLoadingHolidays) {
+       // Optional: Prevent request while fetching data
+       return false; 
+    }
+    if (workingDays > remainingDays || workingDays <= 0) return false;
+
+    DateTime endDate = _calculateEndDate(startDate, workingDays);
+
+    _history.add(LeaveRecord(
+      startDate: startDate,
+      endDate: endDate,
+      days: workingDays,
+      requestedOn: DateTime.now(),
+    ));
+
+    _history.sort((a, b) => b.startDate.compareTo(a.startDate));
+    notifyListeners();
+    return true;
+  }
+
+  // --- 3. UPDATED CALCULATION LOGIC (Uses new _isHoliday) ---
+  DateTime _calculateEndDate(DateTime start, int workingDays) {
+    DateTime currentDate = start;
+    int addedDays = 0;
+    
+    while (addedDays < workingDays) {
+      bool isWeekend = currentDate.weekday == 6 || currentDate.weekday == 7;
+      bool isPublicHoliday = _isHoliday(currentDate);
+
+      // Only count the day if it is NOT a weekend AND NOT a holiday
+      if (!isWeekend && !isPublicHoliday) {
+        addedDays++;
+      }
+      
+      if (addedDays < workingDays) {
+         currentDate = currentDate.add(const Duration(days: 1));
+      }
+    }
+    return currentDate;
+  }
+
+  // --- 4. RESUMPTION LOGIC (Uses new _isHoliday) ---
+  DateTime getResumptionDate(DateTime endDate) {
+    DateTime resumeDate = endDate.add(const Duration(days: 1));
+
+    // Keep moving forward while it's a weekend OR a holiday
+    while (resumeDate.weekday == 6 || 
+           resumeDate.weekday == 7 || 
+           _isHoliday(resumeDate)) {
+      resumeDate = resumeDate.add(const Duration(days: 1));
+    }
+    return resumeDate;
+  }
+
+  void resetHistory() {
+    _history.clear();
+    notifyListeners();
+  }
+}
