@@ -3,14 +3,6 @@ import 'package:leave_cal/services/leave_provider';
 import 'package:leave_cal/widgets/dashboard.dart';
 import 'package:provider/provider.dart';
 
-
-// Import your files here if separated
-// import 'leave_provider.dart';
-// import 'widgets.dart';
-
-
-
-
 void main() {
   runApp(
     MultiProvider(

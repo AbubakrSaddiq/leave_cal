@@ -27,9 +27,9 @@ class DashboardScreen extends StatelessWidget {
         elevation: 0,
         title: Row(
           children: [
-             Icon(Icons.flag, color: Colors.green[800]), // Placeholder for flag
+             // Icon(Icons.flag, color: Colors.green[800]), // Placeholder for flag
              const SizedBox(width: 8),
-             const Text("Leave Calc", 
+             const Text("Leave Calculator",
                style: TextStyle(color: Color(0xFF1F2937), fontWeight: FontWeight.w700)
              ),
           ],
