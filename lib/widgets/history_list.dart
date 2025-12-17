@@ -30,7 +30,10 @@ class HistoryList extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(40),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300, style: BorderStyle.none),
+          border: Border.all(
+            color: Colors.grey.shade300,
+            style: BorderStyle.none,
+          ),
           borderRadius: BorderRadius.circular(20),
           // ignore: deprecated_member_use
           color: Colors.white.withOpacity(0.5),
@@ -54,28 +57,38 @@ class HistoryList extends StatelessWidget {
       itemCount: history.length,
       itemBuilder: (context, index) {
         final item = history[index];
-        
+
         // Calculate dates
-        final String startDate = DateFormat('dd MMM yyyy').format(item.startDate);
+        final String startDate = DateFormat(
+          'dd MMM yyyy',
+        ).format(item.startDate);
         final String endDate = DateFormat('dd MMM yyyy').format(item.endDate);
-        
-        final DateTime resumptionParams = _calculateResumptionDate(item.endDate);
-        final String resumptionDate = DateFormat('dd MMM yyyy').format(resumptionParams);
+
+        final DateTime resumptionParams = _calculateResumptionDate(
+          item.endDate,
+        );
+        final String resumptionDate = DateFormat(
+          'dd MMM yyyy',
+        ).format(resumptionParams);
 
         return Card(
           margin: const EdgeInsets.only(bottom: 12),
           elevation: 0,
           color: Colors.white,
           shape: RoundedRectangleBorder(
-             borderRadius: BorderRadius.circular(12),
-             side: BorderSide(color: Colors.grey.shade100)
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: Colors.grey.shade100),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: const Color(0xFFEAF4FA),
-                child: const Icon(Icons.calendar_today, color: Color(0xFF2E7D52), size: 18),
+                child: const Icon(
+                  Icons.calendar_today,
+                  color: Color(0xFF2E7D52),
+                  size: 18,
+                ),
               ),
               title: Text(
                 "${item.days} Working Days",
@@ -91,7 +104,11 @@ class HistoryList extends StatelessWidget {
                     const SizedBox(height: 2),
                     _buildDateRow("Ends:", endDate),
                     const SizedBox(height: 2),
-                    _buildDateRow("Resumption:", resumptionDate, isHighlight: true),
+                    _buildDateRow(
+                      "Resumption:",
+                      resumptionDate,
+                      isHighlight: true,
+                    ),
                   ],
                 ),
               ),
@@ -108,13 +125,13 @@ class HistoryList extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: 65, // Fixed width for alignment
+          width: 80, // Fixed width for alignment
           child: Text(
             label,
             style: TextStyle(
               fontSize: 12,
               color: Colors.grey.shade600,
-              fontWeight: FontWeight.w500
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
@@ -122,8 +139,10 @@ class HistoryList extends StatelessWidget {
           date,
           style: TextStyle(
             fontSize: 12,
-            color: isHighlight ? const Color(0xFF2E7D52) : const Color(0xFF1F2937),
-            fontWeight: isHighlight ? FontWeight.bold : FontWeight.normal
+            color: isHighlight
+                ? const Color(0xFF2E7D52)
+                : const Color(0xFF1F2937),
+            fontWeight: isHighlight ? FontWeight.bold : FontWeight.normal,
           ),
         ),
       ],
