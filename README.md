@@ -1,6 +1,6 @@
 # leave_cal
 
-A new Flutter project.
+A leave calculator app
 
 ## Getting Started
 

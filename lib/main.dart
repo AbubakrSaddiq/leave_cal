@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:leave_cal/screens/spalsh_screen.dart';
 import 'package:leave_cal/services/leave_provider';
-import 'package:leave_cal/widgets/dashboard.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Roboto', // Or 'Poppins' if added
         useMaterial3: true,
       ),
-      home: const DashboardScreen(),
+      home: const SplashScreen(),
     );
   }
 }

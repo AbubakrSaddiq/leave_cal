@@ -91,7 +91,7 @@ class HistoryList extends StatelessWidget {
                     const SizedBox(height: 2),
                     _buildDateRow("Ends:", endDate),
                     const SizedBox(height: 2),
-                    _buildDateRow("Resumes:", resumptionDate, isHighlight: true),
+                    _buildDateRow("Resumption:", resumptionDate, isHighlight: true),
                   ],
                 ),
               ),
