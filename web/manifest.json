@@ -1,5 +1,5 @@
 {
-    "name": "leave_cal",
+    "name": "Leave Calculator",
     "short_name": "leave_cal",
     "start_url": ".",
     "display": "standalone",
