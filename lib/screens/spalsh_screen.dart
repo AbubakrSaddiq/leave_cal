@@ -20,7 +20,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void _checkOnboardingStatus() async {
     final prefs = await SharedPreferences.getInstance();
     // Default is 'false' if the key hasn't been set
-    final bool hasCompletedOnboarding = prefs.getBool('onboarding_complete') ?? false;
+    final bool hasCompletedOnboarding =
+        prefs.getBool('onboarding_complete') ?? false;
 
     // Wait a brief moment for the splash effect
     await Future.delayed(const Duration(seconds: 2));
@@ -30,8 +31,8 @@ class _SplashScreenState extends State<SplashScreen> {
     // Navigate based on the status
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => hasCompletedOnboarding 
-            ? const DashboardScreen() 
+        builder: (context) => hasCompletedOnboarding
+            ? const DashboardScreen()
             : const OnboardingScreen(),
       ),
     );
@@ -39,8 +40,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const logo = "lib/assets/logo/app-logo.png";
-
     return Scaffold(
       backgroundColor: Colors.white, // Brand Green background
       body: Center(
@@ -48,14 +47,20 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Placeholder for your Logo/Icon
-          
-            Image.asset("lib/assets/logo/app-logo.png", width: 220, height: 220, fit: BoxFit.contain,),
+            Image.asset(
+              "lib/assets/logo/app-logo.png",
+              width: 220,
+              height: 220,
+              fit: BoxFit.contain,
+            ),
             const SizedBox(height: 20),
-            
+
             const SizedBox(height: 50),
             // Simple loading indicator
             CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white.withOpacity(0.8)),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Colors.white.withOpacity(0.8),
+              ),
               strokeWidth: 3,
             ),
           ],

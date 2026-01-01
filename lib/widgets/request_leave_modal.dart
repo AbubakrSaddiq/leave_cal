@@ -144,7 +144,7 @@ class _RequestLeaveModalState extends State<RequestLeaveModal> {
 
           // Working Days Input
           const Text(
-            "Number of Working Days",
+            "Number of Days",
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
