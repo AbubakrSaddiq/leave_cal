@@ -1,11 +1,11 @@
 {
     "name": "Leave Calculator",
-    "short_name": "leave_cal",
+    "short_name": "leave_calculator",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A leave Calculator App",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
