@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:leave_cal/services/auth_service.dart';
 import 'package:leave_cal/services/leave_provider';
 import 'package:leave_cal/widgets/history_list.dart';
 import 'package:leave_cal/widgets/request_leave_modal.dart';
@@ -27,51 +28,76 @@ class DashboardScreen extends StatelessWidget {
         elevation: 0,
         title: Row(
           children: [
-             // Icon(Icons.flag, color: Colors.green[800]), // Placeholder for flag
-             const SizedBox(width: 8),
-             const Text("Leave Calculator",
-               style: TextStyle(color: Color(0xFF1F2937), fontWeight: FontWeight.w700)
-             ),
+            // Icon(Icons.flag, color: Colors.green[800]), // Placeholder for flag
+            const SizedBox(width: 8),
+            const Text(
+              "Leave Calculator",
+              style: TextStyle(
+                color: Color(0xFF1F2937),
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ],
         ),
         actions: [
-        IconButton(
-    
-    icon: const Icon(Icons.refresh, color: Colors.grey), 
-    tooltip: "Reset All",
-    onPressed: () {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Reset App"),
-          content: const Text(
-            "Are you sure you want to clear all leave history and reset your balance to 30 days?",
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.grey),
+            tooltip: "Reset All",
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text("Reset App"),
+                  content: const Text(
+                    "Are you sure you want to clear all leave history and reset your balance to 30 days?",
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Call the provider to clear data
+                        Provider.of<LeaveProvider>(
+                          context,
+                          listen: false,
+                        ).resetHistory();
+
+                        // Close the dialog
+                        Navigator.pop(ctx);
+
+                        // Optional: Show a confirmation snackbar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "All history cleared & balance reset.",
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "Reset",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
-            ),
-            TextButton(
-              onPressed: () {
-                // Call the provider to clear data
-                Provider.of<LeaveProvider>(context, listen: false).resetHistory();
-                
-                // Close the dialog
-                Navigator.pop(ctx);
-                
-                // Optional: Show a confirmation snackbar
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("All history cleared & balance reset.")),
-                );
-              },
-              child: const Text("Reset", style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        ),
-      );
-    },
-  )
+
+          // logout button
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.redAccent),
+            tooltip: "Logout",
+            onPressed: () async {
+              await AuthService().signOut();
+            },
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -110,4 +136,3 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 }
-
