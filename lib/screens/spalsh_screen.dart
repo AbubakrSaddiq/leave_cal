@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:leave_cal/screens/onboardingscreen.dart';
 import 'package:leave_cal/screens/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -41,22 +41,20 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF2E7D52), // Brand Green background
+      backgroundColor: Colors.white, // Brand Green background
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Placeholder for your Logo/Icon
-            const Icon(Icons.calendar_month, color: Colors.white, size: 80),
-            const SizedBox(height: 20),
-            const Text(
-              'Leave Calc',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+            Image.asset(
+              "lib/assets/logo/app-logo.png",
+              width: 220,
+              height: 220,
+              fit: BoxFit.contain,
             ),
+            const SizedBox(height: 20),
+
             const SizedBox(height: 50),
             // Simple loading indicator
             CircularProgressIndicator(

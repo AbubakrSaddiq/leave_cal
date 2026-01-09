@@ -9,7 +9,7 @@ Future<void> main() async {
   // Ensure Flutter is initialized before accessing SharedPreferences
   WidgetsFlutterBinding.ensureInitialized();
 
-  // TODO: Replace with your actual Supabase credentials
+  // Supabase credentials
   await Supabase.initialize(
     url: 'https://msxpejnaszjiyhgiqgxp.supabase.co',
     anonKey: 'sb_publishable_h-Cz89DMx0P2ljl14RBQqg_QeBMsEKb',
@@ -31,7 +31,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Leave Calculator',
+
+      // title: 'Leave Calculator',
       theme: ThemeData(
         primaryColor: const Color(0xFF2E7D52),
         scaffoldBackgroundColor: const Color(

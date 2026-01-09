@@ -42,6 +42,11 @@ class LeaveProvider with ChangeNotifier {
 
     await fetchLeaveData(); // Refresh local list
   }
+
+    void resetHistory() {
+    _history.clear();
+    notifyListeners();
+  }
 }
 
 
